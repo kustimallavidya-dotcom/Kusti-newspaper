@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Newspaper, Image as ImageIcon, User, Camera, Trash2, Scissors, Type } from 'lucide-react';
+import { Newspaper, Image as ImageIcon, User, Camera, Trash2, Scissors, Settings, Type } from 'lucide-react';
 import { ThemeType, NewsData } from '../types';
 import CropModal from './CropModal';
 
@@ -14,7 +14,7 @@ const InputForm: React.FC<Props> = ({ data, onChange, isDownloading }) => {
   const [showCropper, setShowCropper] = useState(false);
   const [tempImage, setTempImage] = useState<string | null>(null);
 
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>, field: 'image' | 'logo' | 'reporterImage') => {
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>, field: 'image' | 'reporterImage') => {
     const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
@@ -42,17 +42,18 @@ const InputForm: React.FC<Props> = ({ data, onChange, isDownloading }) => {
           <Newspaper className="text-white" size={24} />
         </div>
         <div>
-          <h2 className="text-xl font-black text-gray-800 leading-none">एडिटर पॅनेल</h2>
-          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-1">Professional Clipping v3.5</p>
+          <h2 className="text-xl font-black text-gray-800 leading-none tracking-tight">एडिटर पॅनेल</h2>
+          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] mt-1">Kusti Varta Generator</p>
         </div>
       </div>
 
       <div className="space-y-6">
         {/* Style Selection */}
-        <div className="space-y-3">
+        <div className="space-y-4">
           <label className="text-[11px] font-black text-gray-500 uppercase tracking-widest flex items-center gap-2">
-            <Type size={14} /> थीम निवडा
+            <Settings size={14} className="text-orange-500" /> पेपर कलर थीम
           </label>
+          
           <div className="grid grid-cols-3 gap-3">
             {Object.values(ThemeType).map((theme) => (
               <button
@@ -60,7 +61,7 @@ const InputForm: React.FC<Props> = ({ data, onChange, isDownloading }) => {
                 onClick={() => onChange({ theme })}
                 className={`py-3 px-1 text-[10px] font-black rounded-2xl border-2 transition-all uppercase ${
                   data.theme === theme 
-                    ? 'border-orange-500 bg-orange-50 text-orange-700 shadow-sm' 
+                    ? 'border-orange-500 bg-orange-50 text-orange-700 shadow-sm scale-[1.02]' 
                     : 'border-gray-50 bg-gray-50/50 text-gray-400 hover:border-gray-200'
                 }`}
               >
@@ -73,32 +74,36 @@ const InputForm: React.FC<Props> = ({ data, onChange, isDownloading }) => {
         {/* Content Fields */}
         <div className="space-y-4">
           <div className="space-y-1.5">
-            <label className="text-xs font-bold text-gray-600 px-1">बातमीचा मथळा (Headline)</label>
+            <label className="text-xs font-bold text-gray-600 px-1 flex items-center gap-2">
+              <Type size={14} className="text-orange-500" /> बातमीचा मथळा (Headline)
+            </label>
             <input
               type="text"
               value={data.headline}
               onChange={(e) => onChange({ headline: e.target.value })}
-              className="w-full p-4 bg-gray-50 border border-gray-200 rounded-2xl text-sm font-bold focus:ring-4 focus:ring-orange-500/10 focus:bg-white outline-none transition-all"
+              className="w-full p-4 bg-gray-50 border border-gray-200 rounded-2xl text-sm font-bold focus:ring-4 focus:ring-orange-500/10 focus:bg-white outline-none transition-all shadow-sm"
               placeholder="येथे हेडलाईन टाइप करा..."
             />
           </div>
 
           <div className="space-y-1.5">
             <div className="flex justify-between items-center px-1">
-              <label className="text-xs font-bold text-gray-600">मुख्य फोटो (News Photo)</label>
+              <label className="text-xs font-bold text-gray-600 flex items-center gap-2">
+                <ImageIcon size={14} className="text-orange-500" /> मुख्य फोटो (News Photo)
+              </label>
               {data.image && (
                 <button onClick={() => removeImage('image')} className="text-red-500 p-1 hover:bg-red-50 rounded-lg">
                   <Trash2 size={14} />
                 </button>
               )}
             </div>
-            <label className="flex flex-col items-center justify-center w-full h-36 border-2 border-dashed border-gray-200 rounded-[1.5rem] cursor-pointer hover:bg-orange-50/30 overflow-hidden relative transition-all group">
+            <label className="flex flex-col items-center justify-center w-full h-40 border-2 border-dashed border-gray-200 rounded-[1.5rem] cursor-pointer hover:bg-orange-50/30 overflow-hidden relative transition-all group shadow-sm bg-gray-50/20">
               {data.image ? (
                 <img src={data.image} alt="Preview" className="w-full h-full object-cover" />
               ) : (
                 <div className="flex flex-col items-center text-gray-400">
-                  <div className="p-3 bg-gray-100 rounded-2xl mb-2 group-hover:bg-orange-100 transition-colors">
-                    <ImageIcon size={24} className="group-hover:text-orange-600" />
+                  <div className="p-3 bg-white rounded-2xl mb-2 group-hover:bg-orange-100 transition-colors shadow-sm">
+                    <ImageIcon size={28} className="group-hover:text-orange-600" />
                   </div>
                   <span className="text-[10px] font-black uppercase tracking-widest">फोटो अपलोड करा</span>
                 </div>
@@ -112,8 +117,8 @@ const InputForm: React.FC<Props> = ({ data, onChange, isDownloading }) => {
             <textarea
               value={data.body}
               onChange={(e) => onChange({ body: e.target.value })}
-              className="w-full p-4 bg-gray-50 border border-gray-200 rounded-2xl text-xs focus:ring-4 focus:ring-orange-500/10 focus:bg-white outline-none min-h-[160px] transition-all leading-relaxed"
-              placeholder="संपूर्ण बातमी येथे लिहा. मजकूर जेवढा जास्त असेल, फॉन्ट आपोआप लहान होईल..."
+              className="w-full p-4 bg-gray-50 border border-gray-200 rounded-2xl text-xs focus:ring-4 focus:ring-orange-500/10 focus:bg-white outline-none min-h-[160px] transition-all leading-relaxed shadow-sm font-medium"
+              placeholder="संपूर्ण बातमी येथे लिहा..."
             />
           </div>
         </div>
@@ -124,7 +129,7 @@ const InputForm: React.FC<Props> = ({ data, onChange, isDownloading }) => {
             <User size={14} className="text-orange-600" /> बातमीदार माहिती
           </label>
           
-          <div className="bg-gray-50 p-5 rounded-[2rem] border border-gray-200 flex gap-4 items-center">
+          <div className="bg-gradient-to-br from-gray-50 to-white p-5 rounded-[2rem] border border-gray-200 flex gap-4 items-center shadow-sm">
             <div className="relative">
                <label className="flex flex-col items-center justify-center w-20 h-20 border-2 border-dashed border-orange-300 rounded-full cursor-pointer hover:border-orange-500 overflow-hidden relative bg-white shadow-inner transition-all ring-4 ring-white">
                 {data.reporterImage ? (
@@ -140,7 +145,7 @@ const InputForm: React.FC<Props> = ({ data, onChange, isDownloading }) => {
               {data.reporterImage && (
                 <button 
                   onClick={() => setShowCropper(true)}
-                  className="absolute -bottom-1 -right-1 p-2 bg-white text-orange-600 rounded-full shadow-lg border border-orange-100 hover:scale-110 transition-transform"
+                  className="absolute -bottom-1 -right-1 p-2 bg-white text-orange-600 rounded-full shadow-lg border border-orange-100 hover:scale-110 transition-transform z-10"
                 >
                   <Scissors size={12} />
                 </button>
@@ -153,14 +158,14 @@ const InputForm: React.FC<Props> = ({ data, onChange, isDownloading }) => {
                 value={data.reporterName}
                 onChange={(e) => onChange({ reporterName: e.target.value })}
                 className="w-full p-3 text-xs bg-white border border-gray-200 rounded-xl focus:ring-4 focus:ring-orange-500/10 outline-none font-bold shadow-sm"
-                placeholder="नाव"
+                placeholder="नाव (उदा. गणेश मानुगडे)"
               />
               <input
                 type="text"
                 value={data.designation}
                 onChange={(e) => onChange({ designation: e.target.value })}
-                className="w-full p-3 text-xs bg-white border border-gray-200 rounded-xl focus:ring-4 focus:ring-orange-500/10 outline-none shadow-sm"
-                placeholder="पद / जिल्हा"
+                className="w-full p-3 text-xs bg-white border border-gray-200 rounded-xl focus:ring-4 focus:ring-orange-500/10 outline-none shadow-sm font-semibold"
+                placeholder="पद / जिल्हा (उदा. कोल्हापूर)"
               />
             </div>
           </div>

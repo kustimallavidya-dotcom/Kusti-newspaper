@@ -1,8 +1,8 @@
 
 import { ThemeType, ThemeConfig } from './types';
 
-// IMPORTANT: Replace this URL with the actual Base64 string of your logo for a permanent solution.
-export const DEFAULT_LOGO = "https://i.ibb.co/VpL8hX3/kusti-logo.png"; 
+// We no longer use an external image for the logo, switching to a code-based icon.
+export const DEFAULT_LOGO = null; 
 
 export const THEMES: Record<ThemeType, ThemeConfig> = {
   [ThemeType.CLASSIC]: {
