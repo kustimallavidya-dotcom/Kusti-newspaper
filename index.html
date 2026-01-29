@@ -13,6 +13,7 @@
         body {
             font-family: 'Mukta', sans-serif;
             background-color: #f8fafc;
+            overflow-x: hidden;
         }
         .newspaper-font {
             font-family: 'Martel', serif;
@@ -23,15 +24,14 @@
         }
         .attractive-title {
             font-family: 'Rozha One', serif;
-            /* Vibrant Traditional Colors */
-            color: #fbbf24; /* yellow-400 */
+            color: #fbbf24;
             text-shadow: 
                 -1px -1px 0 #000,  
                  1px -1px 0 #000,
                 -1px  1px 0 #000,
                  1px  1px 0 #000,
-                 2px  2px 0px #b45309, /* amber-700 */
-                 4px  4px 0px #78350f, /* amber-900 */
+                 2px  2px 0px #b45309,
+                 4px  4px 0px #78350f,
                  6px  6px 12px rgba(0,0,0,0.4);
             filter: drop-shadow(0px 2px 4px rgba(0,0,0,0.2));
             letter-spacing: -0.03em;
@@ -63,7 +63,6 @@
             }
         }
 
-        /* Custom scrollbar for editing panel */
         .no-print::-webkit-scrollbar {
             width: 6px;
         }
@@ -81,6 +80,7 @@
     "react/": "https://esm.sh/react@^19.2.4/",
     "react": "https://esm.sh/react@^19.2.4",
     "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
+    "react-dom": "https://esm.sh/react-dom@^19.2.4",
     "lucide-react": "https://esm.sh/lucide-react@^0.563.0",
     "html2canvas": "https://esm.sh/html2canvas@^1.4.1"
   }
@@ -89,5 +89,6 @@
 </head>
 <body>
     <div id="root"></div>
+    <script type="module" src="./index.tsx"></script>
 </body>
 </html>

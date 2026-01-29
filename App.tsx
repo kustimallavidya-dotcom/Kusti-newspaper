@@ -21,7 +21,7 @@ const App: React.FC = () => {
   
   const [isDownloading, setIsDownloading] = useState(false);
   const [downloadSuccess, setDownloadSuccess] = useState(false);
-  const [previewScale, setPreviewScale] = useState(0.8); // Default fallback scale
+  const [previewScale, setPreviewScale] = useState(1);
   const canvasRef = useRef<HTMLDivElement>(null);
   const previewContainerRef = useRef<HTMLDivElement>(null);
 
@@ -29,34 +29,27 @@ const App: React.FC = () => {
     setData(prev => ({ ...prev, ...updates }));
   };
 
-  // Improved Scaling Logic to ensure Preview is always visible
+  // Robust Scaling logic using ResizeObserver
   useEffect(() => {
-    const updateScale = () => {
-      if (!previewContainerRef.current) return;
-      
-      const containerWidth = previewContainerRef.current.offsetWidth;
-      const windowWidth = window.innerWidth;
+    if (!previewContainerRef.current) return;
 
-      // Ensure we have a valid width to calculate from
-      const baseWidth = containerWidth > 0 ? containerWidth : windowWidth;
-      
-      // Calculate responsive padding
-      const padding = windowWidth < 768 ? 32 : 80;
-      const availableWidth = baseWidth - padding;
-      
-      // Calculate scale to fit 600px width into available space
-      const newScale = Math.max(0.2, Math.min(availableWidth / 600, 1));
-      setPreviewScale(newScale);
-    };
+    const observer = new ResizeObserver((entries) => {
+      for (let entry of entries) {
+        const { width } = entry.contentRect;
+        const windowWidth = window.innerWidth;
+        const padding = windowWidth < 768 ? 20 : 60;
+        const availableWidth = width - padding;
+        
+        // Target canvas width is 600px
+        const newScale = Math.min(availableWidth / 600, 1.2);
+        // Ensure scale is never too small to see
+        setPreviewScale(Math.max(newScale, 0.15));
+      }
+    });
 
-    // Initial calculation with a slight delay to ensure browser layout is stable
-    const timer = setTimeout(updateScale, 200);
+    observer.observe(previewContainerRef.current);
     
-    window.addEventListener('resize', updateScale);
-    return () => {
-      window.removeEventListener('resize', updateScale);
-      clearTimeout(timer);
-    };
+    return () => observer.disconnect();
   }, []);
 
   const handleDownload = async () => {
@@ -66,27 +59,33 @@ const App: React.FC = () => {
     setDownloadSuccess(false);
     
     try {
-      await new Promise(resolve => setTimeout(resolve, 800));
+      // Small delay to ensure any pending styles are applied
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
       const canvas = await html2canvas(canvasRef.current, {
-        scale: 4, // 4x scale is sufficient for high quality while keeping file size reasonable
+        scale: 3, // 3x is a good balance for quality and speed
         useCORS: true,
         allowTaint: true,
         backgroundColor: '#ffffff',
         logging: false,
-        imageTimeout: 0,
+        imageTimeout: 15000,
+        onclone: (clonedDoc) => {
+            const el = clonedDoc.getElementById('newspaper-clipping');
+            if (el) el.style.transform = 'none';
+        }
       });
       
       const image = canvas.toDataURL("image/png", 1.0);
       const link = document.createElement("a");
       link.href = image;
-      link.download = `KustiVarta-HD-${Date.now()}.png`;
+      link.download = `KustiVarta-${Date.now()}.png`;
       link.click();
       
       setDownloadSuccess(true);
-      setTimeout(() => setDownloadSuccess(false), 4000);
+      setTimeout(() => setDownloadSuccess(false), 3000);
     } catch (error) {
       console.error("Capture Error:", error);
-      alert("फोटो तयार करताना अडचण आली. कृपया पुन्हा प्रयत्न करा.");
+      alert("फोटो तयार करताना अडचण आली. कृपया इमेज साईज कमी करून पहा किंवा पुन्हा प्रयत्न करा.");
     } finally {
       setIsDownloading(false);
     }
@@ -113,12 +112,12 @@ const App: React.FC = () => {
             {isDownloading ? (
               <div className="bg-orange-50 px-5 py-3 rounded-2xl flex items-center gap-3 border border-orange-100 animate-pulse">
                 <Loader2 size={18} className="animate-spin text-orange-600" />
-                <span className="text-[11px] font-black text-orange-800 uppercase tracking-widest">प्रक्रिया सुरू आहे...</span>
+                <span className="text-[11px] font-black text-orange-800 uppercase tracking-widest">प्रोसेसिंग...</span>
               </div>
             ) : downloadSuccess ? (
-              <div className="bg-green-600 text-white px-6 py-3 rounded-2xl flex items-center gap-2 shadow-lg shadow-green-100 animate-in zoom-in duration-300">
+              <div className="bg-green-600 text-white px-6 py-3 rounded-2xl flex items-center gap-2 shadow-lg animate-in zoom-in duration-300">
                 <CheckCircle2 size={18} />
-                <span className="text-xs font-black uppercase">पूर्ण झाले</span>
+                <span className="text-xs font-black uppercase">सेव्ह झाले</span>
               </div>
             ) : (
               <div className="flex items-center gap-2">
@@ -131,7 +130,7 @@ const App: React.FC = () => {
                 </button>
                 <button 
                   onClick={handleDownload}
-                  className="flex items-center gap-3 bg-orange-600 text-white px-6 md:px-8 py-3 rounded-2xl text-[12px] font-black tracking-widest uppercase shadow-xl shadow-orange-200 hover:bg-orange-700 hover:-translate-y-0.5 active:translate-y-0 transition-all border-b-4 border-orange-800"
+                  className="flex items-center gap-3 bg-orange-600 text-white px-6 md:px-8 py-3 rounded-2xl text-[12px] font-black tracking-widest uppercase shadow-xl hover:bg-orange-700 hover:-translate-y-0.5 transition-all border-b-4 border-orange-800"
                 >
                   <Download size={18} /> HD डाऊनलोड
                 </button>
@@ -157,15 +156,15 @@ const App: React.FC = () => {
                   <Info size={22} className="text-blue-600" />
                 </div>
                 <div className="space-y-1">
-                   <p className="text-xs font-black text-slate-800 uppercase tracking-wider">सूचना</p>
-                   <p className="text-[11px] text-slate-500 leading-relaxed font-semibold">बातमीच्या लांबीनुसार मांडणी आणि फॉन्ट आपोआप बदलला जातो जेणेकरून ३:४ आकारात सर्व मजकूर व्यवस्थित दिसेल.</p>
+                   <p className="text-xs font-black text-slate-800 uppercase tracking-wider">टीप</p>
+                   <p className="text-[11px] text-slate-500 leading-relaxed font-semibold">बातमीच्या लांबीनुसार मजकूर आपोआप रॅपिंग (Wrapping) होतो. ३:४ गुणोत्तरात सर्वोत्तम रिझल्ट मिळेल.</p>
                 </div>
               </div>
             </div>
           </div>
 
           {/* Preview Side */}
-          <div className="lg:col-span-8 flex flex-col items-center" ref={previewContainerRef}>
+          <div className="lg:col-span-8 flex flex-col items-center w-full" ref={previewContainerRef}>
             <div className="w-full">
               <div className="mb-6 flex items-center justify-between border-b border-slate-200 pb-4 no-print px-2">
                 <div className="flex items-center gap-3">
@@ -174,30 +173,24 @@ const App: React.FC = () => {
                    </div>
                    <span className="text-[13px] font-black text-slate-600 uppercase tracking-widest">लाईव्ह प्रिव्ह्यू</span>
                 </div>
-                <div className="flex items-center gap-2">
-                   <div className={`h-2.5 w-2.5 rounded-full ${isDownloading ? 'bg-orange-500 animate-pulse' : 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.4)]'}`}></div>
-                   <span className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">३:४ गुणोत्तर</span>
+                <div className="flex items-center gap-2 text-[10px] font-bold text-slate-400">
+                   <RefreshCcw size={12} className={isDownloading ? 'animate-spin text-orange-500' : ''} />
+                   <span className="uppercase tracking-tighter">ऑटो-स्केलिंग {Math.round(previewScale * 100)}%</span>
                 </div>
               </div>
               
-              <div className="bg-slate-200/40 rounded-[2.5rem] border border-slate-200 p-6 md:p-12 flex flex-col items-center justify-start min-h-[500px] md:min-h-[850px] overflow-hidden relative shadow-inner group transition-all duration-300">
-                {/* The scaling div - ensures visibility */}
+              <div className="bg-slate-200/50 rounded-[2.5rem] border-2 border-dashed border-slate-300 p-4 md:p-8 flex items-start justify-center min-h-[600px] md:min-h-[850px] overflow-hidden relative shadow-inner group">
+                {/* The scaling div */}
                 <div 
-                  className="transition-all duration-500 ease-out origin-top shadow-[0_30px_70px_-15px_rgba(0,0,0,0.2)] bg-white"
+                  className="transition-transform duration-300 ease-out origin-top shadow-2xl bg-white ring-1 ring-black/5"
                   style={{ 
                     transform: `scale(${previewScale})`,
                     width: '600px',
-                    height: '800px'
+                    height: '800px',
+                    display: 'block'
                   }}
                 >
                   <NewspaperCanvas ref={canvasRef} data={data} />
-                </div>
-                
-                {/* Visual Status Indicator */}
-                <div className="absolute bottom-6 left-0 right-0 flex justify-center no-print pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity">
-                   <p className="bg-slate-900/80 backdrop-blur-md px-5 py-2 rounded-full text-[11px] font-black text-white uppercase border border-slate-700 shadow-xl flex items-center gap-2">
-                    <RefreshCcw size={12} /> ऑटो-स्केलिंग सक्रिय
-                   </p>
                 </div>
               </div>
             </div>
@@ -205,14 +198,14 @@ const App: React.FC = () => {
         </div>
       </main>
 
-      {/* Floating Action Button for Mobile Users */}
+      {/* Mobile Floating Action Button */}
       {!isDownloading && !downloadSuccess && (
-        <div className="fixed bottom-8 right-8 lg:hidden no-print z-[150]">
+        <div className="fixed bottom-6 right-6 lg:hidden no-print z-[150]">
           <button
             onClick={handleDownload}
-            className="bg-orange-600 text-white h-16 w-16 rounded-full shadow-2xl flex items-center justify-center transition-all active:scale-90 border-4 border-white animate-bounce ring-4 ring-orange-100"
+            className="bg-orange-600 text-white h-14 w-14 rounded-full shadow-2xl flex items-center justify-center transition-all active:scale-90 border-2 border-white animate-pulse"
           >
-            <Download size={28} />
+            <Download size={24} />
           </button>
         </div>
       )}
