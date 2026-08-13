@@ -20,8 +20,7 @@ export const getMarathiDate = (): string => {
   const year = marathiDigits(date.getFullYear());
   const dayName = marathiDays[date.getDay()];
 
-  // Placeholder for Tithi
-  const tithi = "शुक्ल पक्ष / तिथी"; 
-
-  return `${day} ${month} ${year}, ${dayName} (${tithi})`;
+  // Return strictly Date and Day of week in Marathi
+  return `${dayName}, ${day} ${month} ${year}`;
 };
+

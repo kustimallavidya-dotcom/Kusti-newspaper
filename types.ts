@@ -5,6 +5,8 @@ export enum ThemeType {
   BLUE = 'Modern Blue'
 }
 
+export type SocialPreset = 'standard' | 'insta_post' | 'insta_story' | 'whatsapp' | 'facebook';
+
 export interface NewsData {
   headline: string;
   body: string;
@@ -14,6 +16,18 @@ export interface NewsData {
   logo: string | null;
   reporterImage: string | null;
   theme: ThemeType;
+  paperTitle: string;
+  paperSubTitle: string;
+  titleFont?: 'rozha' | 'baloo' | 'kadwa' | 'mukta';
+  headlineScale: number; // 0.7 to 1.6 scale
+  bodyScale: number;     // 0.7 to 1.6 scale
+  titleColor?: string;
+  subTitleColor?: string;
+  subTitleBgColor?: string;
+  headlineColor?: string;
+  bodyColor?: string;
+  borderColorCustom?: string;
+  headerBgCustom?: string;
 }
 
 export interface ThemeConfig {
@@ -25,3 +39,4 @@ export interface ThemeConfig {
   borderColor: string;
   stripColor: string;
 }
+

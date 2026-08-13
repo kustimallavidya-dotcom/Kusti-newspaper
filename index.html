@@ -4,74 +4,81 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>कुस्ती मल्लविद्या वार्ता | 8K Newspaper Generator</title>
+    <title>मल्लविद्या विश्व वार्ता | HD Newspaper Generator</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Modak&family=Mukta:wght@300;400;500;600;700;800&family=Rozha+One&family=Martel:wght@400;700;900&family=Yatra+One&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Anek+Devanagari:wght@600;700;800&family=Baloo+2:wght@700;800&family=Kadwa:wght@700;900&family=Martel:wght@700;900&family=Mukta:wght@600;700;800&family=Rozha+One&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Mukta', sans-serif;
-            background-color: #f8fafc;
-            overflow-x: hidden;
-        }
-        .newspaper-font {
-            font-family: 'Martel', serif;
-        }
-        .header-font {
-            font-family: 'Rozha One', serif;
-            letter-spacing: -0.01em;
-        }
-        .attractive-title {
-            font-family: 'Rozha One', serif;
-            color: #fbbf24;
-            text-shadow: 
-                -1px -1px 0 #000,  
-                 1px -1px 0 #000,
-                -1px  1px 0 #000,
-                 1px  1px 0 #000,
-                 2px  2px 0px #b45309,
-                 4px  4px 0px #78350f,
-                 6px  6px 12px rgba(0,0,0,0.4);
-            filter: drop-shadow(0px 2px 4px rgba(0,0,0,0.2));
-            letter-spacing: -0.03em;
-        }
-        .headline-font {
-            font-family: 'Rozha One', serif;
+            background-color: #f1f5f9;
+            -webkit-font-smoothing: antialiased;
         }
         
-        @media print {
-            .no-print {
-                display: none !important;
-            }
-            body {
-                background-color: white !important;
-                margin: 0;
-                padding: 0;
-            }
-            #newspaper-clipping {
-                border: none !important;
-                box-shadow: none !important;
-                width: 100% !important;
-                max-width: 100% !important;
-                height: auto !important;
-                margin: 0 !important;
-                padding: 0 !important;
-                position: absolute !important;
-                top: 0 !important;
-                left: 0 !important;
-            }
+        /* Devanagari Masthead Calligraphy Fonts - Solid, unbroken connected strokes */
+        .font-masthead-rozha {
+            font-family: 'Rozha One', 'Martel', serif;
+            font-weight: 400;
         }
 
-        .no-print::-webkit-scrollbar {
-            width: 6px;
+        .font-masthead-baloo {
+            font-family: 'Baloo 2', 'Mukta', cursive, sans-serif;
+            font-weight: 800;
         }
-        .no-print::-webkit-scrollbar-track {
-            background: #f1f1f1;
+
+        .font-masthead-kadwa {
+            font-family: 'Kadwa', 'Martel', serif;
+            font-weight: 900;
         }
-        .no-print::-webkit-scrollbar-thumb {
-            background: #ea580c;
-            border-radius: 10px;
+
+        .font-masthead-mukta {
+            font-family: 'Mukta', 'Anek Devanagari', sans-serif;
+            font-weight: 800;
+        }
+
+        .calligraphy-title {
+            font-family: 'Rozha One', 'Martel', serif;
+            font-weight: 400;
+            line-height: 1.15;
+            letter-spacing: 0px !important;
+            word-spacing: 4px;
+            text-rendering: optimizeLegibility;
+            display: block;
+            width: 100%;
+        }
+
+        .calligraphy-subtitle {
+            font-family: 'Rozha One', 'Martel', serif;
+            letter-spacing: 0.5px;
+        }
+        
+        .newspaper-font {
+            font-family: 'Martel', 'Anek Devanagari', serif;
+            text-rendering: optimizeSpeed;
+        }
+
+        .headline-font {
+            font-family: 'Mukta', 'Baloo 2', sans-serif;
+            font-weight: 800;
+            letter-spacing: 0 !important;
+            line-height: 1.35;
+        }
+        
+        .drop-cap {
+            font-size: 3.8rem;
+            line-height: 0.85;
+            font-family: 'Rozha One', 'Mukta', sans-serif;
+            font-weight: 800;
+            display: inline-block;
+            margin-right: 10px;
+            float: left;
+            color: #b32400;
+        }
+
+        @media print {
+            .no-print { display: none !important; }
+            #newspaper-clipping { border: none !important; box-shadow: none !important; width: 100% !important; }
         }
     </style>
 <script type="importmap">
@@ -86,6 +93,7 @@
   }
 }
 </script>
+<link rel="stylesheet" href="/index.css">
 </head>
 <body>
     <div id="root"></div>
